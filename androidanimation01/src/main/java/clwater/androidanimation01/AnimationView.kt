@@ -25,6 +25,7 @@ class AnimationView : View {
     var isMirror = false
     var isRight = true
     var isFishLeft = true
+    var viewBackgroundColor = Color.WHITE
 
 
     constructor(context: Context) : super(context) {
@@ -71,26 +72,25 @@ class AnimationView : View {
         p.color = Color.BLACK
         p.strokeWidth = 5F
 
-        canvas.translate(width/2F , 0F)
+        canvas.translate(width/2F , height / 2F)
 
         if(isMirror){
             canvas.scale( -1F ,1F)
         }
 
-
-        canvas.drawLine(-viewWidth / 2, viewHeight / 2 , viewWidth/2, viewHeight / 2, p)
+        canvas.drawLine(-viewWidth / 2, 0F , viewWidth/2, 0F, p)
 
         canvas.save()
         drawShark(perIndex , canvas)
         canvas.restore()
-        drawBottom(canvas)
+//        drawBottom(canvas)
 
     }
 
     private fun  drawBottom(canvas: Canvas) {
         val p = Paint()
-        p.color = Color.WHITE
-        canvas.drawRect(Rect(-width / 2,  height /2 + 3, width / 2, height /2 + height / 10), p)
+        p.color = viewBackgroundColor
+        canvas.drawRect(Rect(-width / 2,  3, width / 2, height / 10), p)
     }
 
     private fun  drawShark(index: Float, canvas: Canvas) {
@@ -101,15 +101,15 @@ class AnimationView : View {
         p.color = Color.BLACK
         p.style = Paint.Style.STROKE
 
-        var r1 = 100
+        var r1 = 100F
         var xofset = 0 //向右为正
         var yofset = 0 //向下为正
 
         drawSharkOut(canvas , index , r1 , -65 , yofset , isRight , p)
         drawSharkIn(canvas , index , r1 , -65 , yofset , isRight , p)
 
-        p.color = Color.WHITE
-        canvas.drawLine(index - r1 + 65 - viewWidth/2, viewHeight / 2 , index +  r1 - 65  - viewWidth/2, viewHeight / 2, p)
+        p.color = viewBackgroundColor
+        canvas.drawLine(index - r1 + 65 - viewWidth/2, 0F , index +  r1 - 65  - viewWidth/2, 0F, p)
 
         p.color = Color.BLACK
         drawFish(canvas , index , p)
@@ -127,7 +127,7 @@ class AnimationView : View {
         }
 
 
-        var yofsetFish = viewHeight / 2
+        var yofsetFish = 0F
         val widthFish =  20F
         val heightFish = 12F
         val widthFishTail =  20F
@@ -138,7 +138,7 @@ class AnimationView : View {
         canvas.translate(xofsetFish - viewWidth/2 , yofsetFish)
         canvas.rotate(90F)
         val per = (index - viewWidth / 5 * 2) / (viewWidth / 5 * 2)
-        val degreesi =per * 360 + 10
+        val degreesi =per * 360  + 10
         canvas.rotate(degreesi)
 
         if (per > 0.4) {
@@ -148,39 +148,63 @@ class AnimationView : View {
 
 
             val rectF = RectF(xofsetFish - widthFish, yofsetFish - heightFish, xofsetFish + widthFish, yofsetFish + heightFish)
-            canvas.drawArc(rectF, 0F, 360F, false, p)
+            p.color = viewBackgroundColor
+            p.style = Paint.Style.FILL
+            canvas.drawArc(rectF, 0F, 360F, true, p)
+
+            p.color = Color.BLACK
+            p.style = Paint.Style.STROKE
+            canvas.drawArc(rectF, 0F, 360F, true, p)
+
 
             canvas.drawLine(xofsetFish + widthFish, yofsetFish, xofsetFish + widthFish + widthFishTail, yofsetFish + heightFishTail, p)
             canvas.drawLine(xofsetFish + widthFish + widthFishTail, yofsetFish + heightFishTail, xofsetFish + widthFish + widthFishTail, yofsetFish - heightFishTail, p)
             canvas.drawLine(xofsetFish + widthFish + widthFishTail, yofsetFish - heightFishTail, xofsetFish + widthFish, yofsetFish, p)
 
-            canvas.drawPoint(xofsetFish - widthFish / 3, yofsetFish, p)
+            canvas.drawPoint(xofsetFish - widthFish / 3, yofsetFish , p)
+
+
+
+//            if (per >= 0.5){
+
+                val water = 50F
+                val waterR = 30F
+                canvas.translate(0F ,yofsetFish + water)
+                p.color = Color.BLACK
+                p.style = Paint.Style.STROKE
+                val waterRectF = RectF(-waterR , -waterR , waterR , waterR)
+                canvas.drawArc(waterRectF, 0F , 360F , true, p)
+
+                canvas.translate(0F , - 2 * water)
+                canvas.drawArc(waterRectF, 0F , 360F , true, p)
+
+//            }
         }
     }
 
-    fun  drawSharkOut(canvas: Canvas , index: Float, r: Int, xofset: Int, yofset: Int, directionRight: Boolean, p: Paint) {
+    fun  drawSharkOut(canvas: Canvas , index: Float, r: Float, xofset: Int, yofset: Int, directionRight: Boolean, p: Paint) {
         if (directionRight){
             val xofset =  xofset - viewWidth/2
-            val rectf = RectF(index - r + xofset, viewHeight / 2 - r , index + r + xofset , viewHeight / 2 + r )
+            val rectf = RectF(index - r + xofset, -r , index + r + xofset , r )
             canvas.drawArc(rectf, -95F , 95F, false, p)
         }else{
             val xofset = 30 + xofset - viewWidth/2
-            val rectf = RectF(index + xofset  , viewHeight / 2 - r , index + 2 * r + xofset, viewHeight / 2 + r )
+            val rectf = RectF(index + xofset  ,  -r , index + 2 * r + xofset, r )
             canvas.drawArc(rectf, -180F , 95F, false, p)
         }
 
 
     }
 
-    fun  drawSharkIn(canvas: Canvas , index: Float, r1: Int, xofset: Int, yofset: Int, directionRight: Boolean, p: Paint) {
+    fun  drawSharkIn(canvas: Canvas , index: Float, r1: Float, xofset: Int, yofset: Int, directionRight: Boolean, p: Paint) {
         val r = (1.5 * r1).toInt()
         if (directionRight) {
             val xofset = (- (r - ( r - r1) * 0.6)).toInt() + xofset - viewWidth/2
-            val rectf = RectF(index - r + xofset, viewHeight / 2 - r + yofset, index + r + xofset, viewHeight / 2 + r + yofset)
+            val rectf = RectF(index - r + xofset, (- r + yofset).toFloat(), index + r + xofset, (+ r + yofset).toFloat())
             canvas.drawArc(rectf, -42F, 42F, false, p)
         }else{
             val xofset = -45 + xofset - viewWidth/2
-            val rectf = RectF(index + r + xofset, viewHeight / 2 - r + yofset, index + 3 * r + xofset, viewHeight / 2 + r + yofset)
+            val rectf = RectF(index + r + xofset, (- r + yofset).toFloat(), index + 3 * r + xofset, (+ r + yofset).toFloat())
             canvas.drawArc(rectf, -180F, 42F, false, p)
         }
 
@@ -229,8 +253,9 @@ class AnimationView : View {
                     }
 
                     Thread.sleep(2200)
-
                     isMirror = !isMirror
+
+
 
                 }
             }
