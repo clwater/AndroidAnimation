@@ -6,6 +6,21 @@
     android:layout_height="match_parent"
     tools:context="clwater.androidanimation01.MainActivity">
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="change"
+        android:id="@+id/button_change"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="change"
+        android:layout_below="@+id/button_change"
+        android:id="@+id/button_start"
+        />
+
     <clwater.androidanimation01.AnimationView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
