@@ -261,10 +261,10 @@ class AnimationViewSharkAndFish : View {
                     Thread.sleep(500)
                     baseIndex = viewWidth - baseIndex
                     uiThread {
-                        changeView(baseIndex, false, 2000)
+                        changeView(baseIndex, false, 3000)
                     }
 
-                    Thread.sleep(2200)
+                    Thread.sleep(3200)
                     //设置镜像x轴信息
                     isMirror = !isMirror
                 }
