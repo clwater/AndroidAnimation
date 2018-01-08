@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
     tools:context="clwater.androidanimation02.MainActivity">
 
-    <clwater.androidanimation02.AnimationViewButtonWater
+    <clwater.androidanimation02.AnimationViewWater
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/animationviewbuttonwater_main"/>
+        android:id="@+id/animationviewater_main"/>
 
 </android.support.constraint.ConstraintLayout>

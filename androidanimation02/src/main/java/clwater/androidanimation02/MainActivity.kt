@@ -11,9 +11,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        animationviewbuttonwater_main.onClick {
-            animationviewbuttonwater_main.startView()
-//            animationviewbuttonwater_main.changeView(100F , 0)
+        animationviewater_main.onClick {
+            animationviewater_main.changeView()
         }
     }
 }
