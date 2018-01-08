@@ -4,10 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import android.graphics.RectF
 import android.view.animation.OvershootInterpolator
 
@@ -23,7 +20,6 @@ class AnimationViewWater : View {
     var viewWidth : Float = 0F  //背景宽度
     var viewHeight : Float = 0F //背景高度
     var perIndex : Float = 0F   //当前坐标
-    var oldIndex : Float = 0F   //上一次坐标
     val baseR = 100F            //展示view的半径
     val coefficient = 0.35F     //内部水滴占整体的比例
     val C = 0.552284749831f     //利用贝塞尔绘制圆的常数
@@ -164,9 +160,9 @@ class AnimationViewWater : View {
         var baseButtonTop : Float
         //根据index判断上部的形态
         if (index <= waterRand){
-            baseButtonTop = baseR - baseR * coefficient * index
+            baseButtonTop = baseR - (baseR * coefficient * index) * 2
         }else{
-            baseButtonTop = baseR - baseR * coefficient + baseR * coefficient * index
+            baseButtonTop = baseR - (baseR * coefficient) * 2 + (baseR * coefficient * index) * 2
             if (baseButtonTop > baseR){
                 baseButtonTop = baseR
             }
