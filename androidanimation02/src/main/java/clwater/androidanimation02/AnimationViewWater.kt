@@ -21,7 +21,7 @@ class AnimationViewWater : View {
     var viewHeight : Float = 0F //背景高度
     var perIndex : Float = 0F   //当前坐标
     val baseR = 100F            //展示view的半径
-    val coefficient = 0.35F     //内部水滴占整体的比例
+    val coefficient = 0.5F     //内部水滴占整体的比例
     val C = 0.552284749831f     //利用贝塞尔绘制圆的常数
     var viewBackgroundColor = 0xFFF9FAF9.toInt()   //背景颜色
 
@@ -73,7 +73,7 @@ class AnimationViewWater : View {
 
     private fun  drawDrops(canvas: Canvas , index: Float) {
         //设置水滴半径
-        val baseR = (baseR * 0.5).toFloat()
+        val baseR = baseR * coefficient
         val index = 1 - index
 
         //根据index将画布中心移动到对应位置
