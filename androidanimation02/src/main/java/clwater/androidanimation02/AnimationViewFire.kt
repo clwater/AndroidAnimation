@@ -31,11 +31,6 @@ class AnimationViewFire : View {
 
     data class Point(val x: Float , val y:Float)   //坐标点的数据类
 
-    var r0 = 0
-    var r1 = 0
-    var r2 = 0
-    var r3 = 0
-
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -193,15 +188,6 @@ class AnimationViewFire : View {
         //绘制火焰背景
         canvas.drawArc(RectF(-baseR, -baseR, baseR, baseR), 0F , 360F,true , paint)
 
-    }
-
-    fun changeTest(r0: Int , r1: Int ,r2: Int ,r3: Int){
-        this.r0 = r0
-        this.r1 = r1
-        this.r2 = r2
-        this.r3 = r3
-
-        invalidate()
     }
 
     //开始动画
