@@ -8,7 +8,10 @@ import android.view.View
 import android.graphics.RectF
 import android.util.Log
 import android.view.animation.OvershootInterpolator
-
+import java.util.*
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Bitmap
 
 
 
@@ -21,7 +24,7 @@ class AnimationViewFire : View {
     var viewWidth : Float = 0F  //背景宽度
     var viewHeight : Float = 0F //背景高度
     var perIndex : Float = 0F   //当前坐标
-    val baseR = 300F            //展示view的半径
+    val baseR = 100F            //展示view的半径
     val coefficient = 0.5F     //内部火焰占整体的比例
     val C = 0.552284749831f     //利用贝塞尔绘制圆的常数
     var viewBackgroundColor = 0xFFF9FAF9.toInt()   //背景颜色
@@ -75,8 +78,29 @@ class AnimationViewFire : View {
         //绘制火焰
         drawDrops(canvas , perIndex)
 
-        drawAuxiliary(canvas)
+        deawCover(canvas , perIndex)
+
+        //绘制辅助线
+//        drawAuxiliary(canvas)
     }
+
+    private fun  deawCover(canvas: Canvas, perIndex: Float) {
+        val baseR = baseR* coefficient
+        canvas.translate(0F , -baseR)
+
+        //设置画笔
+        val paint = Paint()
+        paint.style = Paint.Style.FILL
+        paint.color = Color.parseColor("#E84368")
+//        paint.color = Color.RED
+        paint.strokeWidth = 10F
+        //存储关键点坐标
+        val points : MutableList<Point> = ArrayList()
+
+
+
+    }
+
 
     private fun  drawAuxiliary(canvas: Canvas) {
         val paint = Paint()
@@ -85,7 +109,6 @@ class AnimationViewFire : View {
         paint.strokeWidth = 3F
 
         val baseR = baseR * coefficient
-        //绘制火焰背景
         canvas.drawArc(RectF(-baseR, -baseR, baseR, baseR), 0F , 360F,true , paint)
     }
 
@@ -94,7 +117,7 @@ class AnimationViewFire : View {
         //设置火焰半径
 
 
-        val index = index * 0.25F + 0.75F
+        val index = index * 0.5F + 0.5F
         val baseR = baseR * coefficient * index
 
         //设置画笔
@@ -136,8 +159,6 @@ class AnimationViewFire : View {
 
         val path = Path()
         path.moveTo(points[0].x , points[0].y)
-
-        Log.d("view02" , "points.size: ${points.size}")
 
         for (index in 0..((points.size - 1) / 3 - 1) ){
             path.cubicTo(
