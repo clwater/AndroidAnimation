@@ -6,18 +6,12 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.graphics.RectF
-import android.util.Log
 import android.view.animation.OvershootInterpolator
-import java.util.*
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.Bitmap
-
-
+import kotlin.collections.ArrayList
 
 
 /**
- * Created by gengzhibo on 2018/1/4.
+ * Created by gengzhibo on 2018/1/9.setLatestEventInfo
  */
 class AnimationViewLightning : View {
 
@@ -66,7 +60,8 @@ class AnimationViewLightning : View {
 
     override fun onDraw(canvas: Canvas) {
         canvas.translate(width / 2F, height / 2F)   // 将坐标系移动到画布中央
-        canvas.scale(1F , -1F)
+        canvas.scale(1F , -1F)      //将画布y轴翻转
+        canvas.rotate(45F)          //旋转画布 方便计算
 
         //绘制闪电背景
         drawBaseButton(canvas , perIndex)
@@ -77,8 +72,92 @@ class AnimationViewLightning : View {
 
 
     private fun  drawDrops(canvas: Canvas , index: Float) {
-        //设置闪电半径
+        val baseR = baseR * coefficient
 
+        var index = index
+
+        var changeR = 0F
+
+        if (index <= 0.25){
+            changeR  = this.baseR + baseR
+            changeR = (changeR * (1 - index / 0.25)).toFloat()
+        }else if (index <= 0.4){
+            index = index - 0.25F
+            changeR  = this.baseR
+            changeR = -(changeR * (index / (0.4F - 0.25F)))
+        }else if (index <= 0.6F){
+            index = index - 0.4F
+            changeR = this.baseR
+            changeR = -changeR *  (1 - index / 0.2F)
+        }else if (index <= 0.7F){
+            index = index - 0.6F
+            changeR = baseR
+            changeR = changeR * index / 0.1F
+        }else if (index <= 0.8F){
+            index = index - 0.7F
+            changeR = baseR
+            changeR = baseR - changeR * index / 0.1F
+        }else if (index <= 0.9F){
+            index = index - 0.8F
+            changeR = baseR
+            changeR = -changeR * index / 0.1F
+        }else if (index <= 1F){
+            index = index - 0.9F
+            changeR = baseR
+            changeR = -changeR + changeR * (index / 0.1F)
+        }
+
+
+
+        val path = Path()
+        val paint = Paint()
+        paint.strokeWidth = 5F
+        paint.style = Paint.Style.FILL
+//        paint.color = Color.RED
+        paint.color = viewBackgroundColor
+
+        val points :MutableList<Point> = ArrayList()
+
+        points.add(pointFactory(60 , baseR))
+        points.add(pointFactory(-45 , baseR / 2F))
+        points.add(pointFactory(-45 - 90 , baseR / 5F))
+        points.add(pointFactory(-30 - 90 , baseR))
+        points.add(pointFactory(45 + 90 , baseR / 2F))
+        points.add(pointFactory(45 , baseR / 5F))
+        points.add(pointFactory(60 , baseR))
+
+        for (i in 0..points.size - 1){
+            points.set(i , Point(points[i].x + changeR , points[i].y))
+        }
+
+        for (i in 0..points.size - 1){
+            points.set(i , Point(points[i].x + changeR , points[i].y))
+        }
+
+        val lensPoints = getLensPoints(points)
+
+        path.moveTo(lensPoints[0].x , lensPoints[0].y)
+
+        for (index in 1..lensPoints.size - 1){
+            path.lineTo(lensPoints[index].x , lensPoints[index].y)
+        }
+
+        canvas.drawPath(path , paint)
+
+
+//        val paint2 = Paint()
+//        paint2.strokeWidth = 5F
+//        paint2.color = Color.YELLOW
+//        canvas.drawLine(1000F , 0F ,-1000F , 0F , paint2)
+//        canvas.drawLine( 0F ,-1000F , 0F , 1000F , paint2)
+    }
+
+    private fun  getLensPoints(points: MutableList<Point>): MutableList<Point> {
+        val lensPoints : MutableList<Point> = ArrayList()
+        for ((index , point) in points.withIndex()){
+            lensPoints.add(point)
+        }
+        return lensPoints
     }
 
 
@@ -86,7 +165,13 @@ class AnimationViewLightning : View {
     private fun  drawBaseButton(canvas: Canvas , index: Float) {
         //设置画笔
         val paint = Paint()
-        paint.color = Color.parseColor("#595A59")
+
+        if ((index <= 0.45F && index >= 0.35F) || (index >= 0.65F && index <= 0.75F)) {
+            paint.color = Color.parseColor("#ACADAC")
+        }else{
+            paint.color = Color.parseColor("#595A59")
+        }
+
         paint.style = Paint.Style.FILL
 
         //绘制闪电背景
@@ -98,7 +183,7 @@ class AnimationViewLightning : View {
     //开始动画
     fun changeView() {
         val va = ValueAnimator.ofFloat(0F, 1F)
-        va.duration = 1500
+        va.duration = 2000
         va.interpolator = OvershootInterpolator()
         va.addUpdateListener { animation ->
             perIndex = animation.animatedValue as Float
@@ -108,4 +193,8 @@ class AnimationViewLightning : View {
     }
 
 
+    fun pointFactory(angle: Int , length: Float): Point {
+        val _angle = angle / 180F * Math.PI
+        return Point((length * Math.sin(_angle)).toFloat(), (length * Math.cos(_angle)).toFloat())
+    }
 }
