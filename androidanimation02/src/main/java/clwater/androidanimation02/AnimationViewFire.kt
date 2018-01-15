@@ -128,8 +128,8 @@ class AnimationViewFire : View {
 
         canvas.drawBitmap(mDstB,  -baseR/2,  -baseR/2, paint2)
 //        canvas.drawBitmap(mDstB, -baseR/2, -baseR/2, paint2)
-//        paint2.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-        paint2.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST)
+        paint2.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+//        paint2.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST)
         canvas.drawBitmap(mSrcB, -baseR/2, -baseR/2, paint2)
         paint2.xfermode = null
 
@@ -167,7 +167,7 @@ class AnimationViewFire : View {
         val canvas = Canvas(bm)
         canvas.translate(baseR / 2F, 0F)
 
-        canvas.rotate(-15F)
+        canvas.rotate(-15F - 90F)
 
         val bsaer = baseR * coefficient
 
@@ -228,7 +228,20 @@ class AnimationViewFire : View {
 
 
         val rectf = RectF(-dstLength, -dstLength, dstLength, dstLength)
-        canvas.drawArc(rectf , rangePer , 20F , true, paint)
+//        canvas.drawArc(rectf , rangePer , 20F , true, paint)
+
+
+        val path = Path()
+        path.moveTo(points[0].x, points[0].y)
+        for (i in 0..2){
+            path.cubicTo(
+                    points[i * 3].x ,points[i * 3].y ,
+                    points[i * 3 + 1].x ,points[i * 3 + 1].y ,
+                    points[i * 3 + 2].x ,points[i * 3 + 2].y
+                    )
+        }
+        canvas.rotate(rangePer)
+        canvas.drawPath(path , paint)
 
 
 
