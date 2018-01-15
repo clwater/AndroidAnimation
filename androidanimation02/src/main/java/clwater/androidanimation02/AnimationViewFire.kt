@@ -24,7 +24,7 @@ class AnimationViewFire : View {
     var viewWidth : Float = 0F  //背景宽度
     var viewHeight : Float = 0F //背景高度
     var perIndex : Float = 0F   //当前坐标
-    val baseR = 100F            //展示view的半径
+    val baseR = 200F            //展示view的半径
     val coefficient = 0.5F     //内部火焰占整体的比例
     val C = 0.552284749831f     //利用贝塞尔绘制圆的常数
     var viewBackgroundColor = 0xFFF9FAF9.toInt()   //背景颜色
@@ -71,7 +71,7 @@ class AnimationViewFire : View {
         //绘制火焰背景
         drawBaseButton(canvas , perIndex)
         //绘制火焰
-        drawDrops(canvas , perIndex)
+        drawFires(canvas , perIndex)
 
         deawCover(canvas , perIndex)
 
@@ -108,10 +108,141 @@ class AnimationViewFire : View {
     }
 
 
-    private fun  drawDrops(canvas: Canvas , index: Float) {
+    private fun  drawFires(canvas: Canvas , index: Float) {
         //设置火焰半径
 
 
+
+
+        val mSrcB = makeSrc(2 * baseR.toInt(), 2 * baseR.toInt(), index)
+        val mDstB = makeDst(2 * baseR.toInt(), 2 * baseR.toInt(), index)
+
+
+        val paint2 = Paint()
+
+        val x = 0
+        val y = 0
+
+        canvas.saveLayer(x - baseR, y - baseR, x + baseR , y + baseR, null, Canvas.ALL_SAVE_FLAG)
+//        canvas.saveLayer(x - baseR, y - baseR, x + baseR , y + baseR, null, Canvas.ALL_SAVE_FLAG)
+
+        canvas.drawBitmap(mDstB,  -baseR/2,  -baseR/2, paint2)
+//        canvas.drawBitmap(mDstB, -baseR/2, -baseR/2, paint2)
+//        paint2.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        paint2.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST)
+        canvas.drawBitmap(mSrcB, -baseR/2, -baseR/2, paint2)
+        paint2.xfermode = null
+
+    }
+
+
+    //绘制火焰背景
+    private fun  drawBaseButton(canvas: Canvas , index: Float) {
+        //设置画笔
+        val paint = Paint()
+        paint.color = Color.parseColor("#E84368")
+        paint.style = Paint.Style.FILL
+
+        //绘制火焰背景
+        canvas.drawArc(RectF(-baseR, -baseR, baseR, baseR), 0F , 360F,true , paint)
+
+    }
+
+    //开始动画
+    fun changeView() {
+        val va = ValueAnimator.ofFloat(0F, 1F)
+        va.duration = 20500
+        va.interpolator = OvershootInterpolator()
+        va.addUpdateListener { animation ->
+            perIndex = animation.animatedValue as Float
+            invalidate()
+        }
+        va.start()
+    }
+
+
+
+    fun makeDst(w: Int, h: Int, index :Float): Bitmap {
+        val bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bm)
+        canvas.translate(baseR / 2F, 0F)
+
+        canvas.rotate(-15F)
+
+        val bsaer = baseR * coefficient
+
+        val paint = Paint()
+        paint.color = Color.YELLOW
+
+//        canvas.drawArc(RectF(0f ,0f ,10F, 10F) ,0F , 0F,  true,  paint)
+//        val baseR = baseR  * index
+
+
+        val random = Random()
+
+        val dstLength :Float
+        val baseDstLength :Float
+        val inPer : Float
+        val rangePer : Float
+
+        if (index <= 0.2F){
+            inPer = index / 0.2F
+            dstLength = 0.5F * inPer * 2 * bsaer
+            rangePer =  90 * inPer
+        }else if (index <= 0.4F){
+            inPer = (index - 0.2F) / 0.2F
+            dstLength = (0.25F * inPer * 2 * bsaer + 2 * 0.5 * bsaer).toFloat()
+            rangePer =  90 * inPer + 90
+        }else if (index <= 0.6F){
+            inPer = (index - 0.4F) / 0.2F
+            dstLength = (0.25F * inPer * 2 * bsaer + 2 * 0.75 * bsaer).toFloat()
+            rangePer =  180 - inPer *90
+        }
+
+
+
+        else{
+//            inPer = 0F
+            dstLength = 2 * baseR
+            rangePer =  0F
+        }
+
+        baseDstLength = dstLength / 3 / 5
+
+
+        val points : MutableList<Point> = ArrayList()
+
+        points.add(Point(0F , 0F))
+
+        points.add(pointFactory(12F + random.nextFloat() * 6,  dstLength / 3 - baseDstLength + 2 *  random.nextFloat() * random.nextFloat() ))
+        points.add(pointFactory(12F + random.nextFloat() * 6,  dstLength / 3 * 2 - baseDstLength + 2 *  random.nextFloat() * random.nextFloat()))
+        points.add(pointFactory(12F + random.nextFloat() * 6,  dstLength - baseDstLength + 2 *  random.nextFloat() * random.nextFloat()))
+
+        points.add(pointFactory(3F + random.nextFloat() * 6,  dstLength - baseDstLength + 2 *  random.nextFloat() * random.nextFloat() ))
+        points.add(pointFactory(-(3F + random.nextFloat() * 6),  dstLength - baseDstLength + 2 *  random.nextFloat() * random.nextFloat()))
+        points.add(pointFactory(-(12F + random.nextFloat() * 6) ,  dstLength - baseDstLength + 2 *  random.nextFloat() * random.nextFloat()))
+
+        points.add(pointFactory(-(12F + random.nextFloat() * 6),  dstLength - baseDstLength + 2 *  random.nextFloat() * random.nextFloat()))
+        points.add(pointFactory(-(12F + random.nextFloat() * 6) ,  dstLength / 3 * 2 - baseDstLength + 2 *  random.nextFloat() * random.nextFloat()))
+        points.add(pointFactory(-(12F + random.nextFloat() * 6) ,  dstLength / 3 - baseDstLength + 2 *  random.nextFloat() * random.nextFloat() ))
+
+
+        val rectf = RectF(-dstLength, -dstLength, dstLength, dstLength)
+        canvas.drawArc(rectf , rangePer , 20F , true, paint)
+
+
+
+        return bm
+    }
+
+    fun makeSrc(w: Int, h: Int , index :Float): Bitmap {
+        val bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bm)
+
+        canvas.translate(baseR / 2F, baseR / 2F)   // 将坐标系移动到画布中央
+//        canvas.scale(1F , -1F)
+
+//        val p = Paint(Paint.ANTI_ALIAS_FLAG)
         val index = index * 0.5F + 0.5F
         val baseR = baseR * coefficient * index
 
@@ -119,37 +250,38 @@ class AnimationViewFire : View {
         val paint = Paint()
         paint.style = Paint.Style.FILL
 //        paint.style = Paint.Style.STROKE
+//        paint.color = Color.BLUE
         paint.color = viewBackgroundColor
         paint.strokeWidth = 10F
         //存储关键点坐标
         val points : MutableList<Point> = ArrayList()
 
 
-        points.add(pointFactory( 190 , baseR))
-        points.add(pointFactory( 280 , baseR / 3F * 4))
-        points.add(pointFactory( 320 ,  baseR / 6F))
-        points.add(pointFactory( 350 , baseR))
+        points.add(pointFactory( 190F , baseR))
+        points.add(pointFactory( 280F , baseR / 3F * 4))
+        points.add(pointFactory( 320F ,  baseR / 6F))
+        points.add(pointFactory( 350F , baseR))
 
-        points.add(pointFactory( 10 , baseR))
-        points.add(pointFactory( 30 , baseR / 3F* 2))
-        points.add(pointFactory( 50 , baseR / 3F ))
+        points.add(pointFactory( 10F , baseR))
+        points.add(pointFactory( 30F , baseR / 3F* 2))
+        points.add(pointFactory( 50F , baseR / 3F ))
 
-        points.add(pointFactory( 60 , baseR / 6F * 3))
-        points.add(pointFactory( 60 , baseR / 6F * 4))
-        points.add(pointFactory( 50 , baseR / 6F * 5))
+        points.add(pointFactory( 60F , baseR / 6F * 3))
+        points.add(pointFactory( 60F , baseR / 6F * 4))
+        points.add(pointFactory( 50F , baseR / 6F * 5))
 
 
-        points.add(pointFactory( 85  , baseR / 6F * 5))
-        points.add(pointFactory( 120 , baseR / 6F * 5))
-        points.add(pointFactory( 150 , baseR ))
+        points.add(pointFactory( 85F , baseR / 6F * 5))
+        points.add(pointFactory( 120F , baseR / 6F * 5))
+        points.add(pointFactory( 150F , baseR ))
 
-        points.add(pointFactory( 160 , baseR / 9F * 7))
-        points.add(pointFactory( 170 , baseR / 9F * 5))
-        points.add(pointFactory( 180 , baseR / 9F * 3))
+        points.add(pointFactory( 160F , baseR / 9F * 7))
+        points.add(pointFactory( 170F , baseR / 9F * 5))
+        points.add(pointFactory( 180F , baseR / 9F * 3))
 
-        points.add(pointFactory( 200 , baseR / 3F))
-        points.add(pointFactory( 195 , baseR / 3F * 2))
-        points.add(pointFactory( 190 , baseR ))
+        points.add(pointFactory( 200F , baseR / 3F))
+        points.add(pointFactory( 195F , baseR / 3F * 2))
+        points.add(pointFactory( 190F , baseR ))
 
 
         val path = Path()
@@ -174,37 +306,12 @@ class AnimationViewFire : View {
             paint.strokeWidth = 1F
             canvas.drawPoint(point.x , point.y , paint)
         }
-
+        return bm
     }
 
-
-    //绘制火焰背景
-    private fun  drawBaseButton(canvas: Canvas , index: Float) {
-        //设置画笔
-        val paint = Paint()
-        paint.color = Color.parseColor("#E84368")
-        paint.style = Paint.Style.FILL
-
-        //绘制火焰背景
-        canvas.drawArc(RectF(-baseR, -baseR, baseR, baseR), 0F , 360F,true , paint)
-
-    }
-
-    //开始动画
-    fun changeView() {
-        val va = ValueAnimator.ofFloat(0F, 1F)
-        va.duration = 1500
-        va.interpolator = OvershootInterpolator()
-        va.addUpdateListener { animation ->
-            perIndex = animation.animatedValue as Float
-            invalidate()
-        }
-        va.start()
-    }
-
-    fun pointFactory(angle: Int , length: Float): Point{
+    fun pointFactory(angle: Float , length: Float): Point{
         val _angle = angle / 180F * Math.PI
-//        Log.d("view02" , "sin($angle)="+Math.sin(_angle))
         return Point((length * Math.sin(_angle)).toFloat(), (length * Math.cos(_angle)).toFloat())
     }
+
 }

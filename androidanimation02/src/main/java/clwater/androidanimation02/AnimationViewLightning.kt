@@ -20,7 +20,6 @@ class AnimationViewLightning : View {
     var perIndex : Float = 0F   //当前坐标
     val baseR = 100F            //展示view的半径
     val coefficient = 0.5F     //内部闪电占整体的比例
-    val C = 0.552284749831f     //利用贝塞尔绘制圆的常数
     var viewBackgroundColor = 0xFFF9FAF9.toInt()   //背景颜色
 
     data class Point(val x: Float , val y:Float)   //坐标点的数据类
@@ -66,13 +65,14 @@ class AnimationViewLightning : View {
         //绘制闪电背景
         drawBaseButton(canvas , perIndex)
         //绘制闪电
-        drawDrops(canvas , perIndex)
+        drawLighting(canvas , perIndex)
 
     }
 
 
-    private fun  drawDrops(canvas: Canvas , index: Float) {
+    private fun  drawLighting(canvas: Canvas , index: Float) {
         val baseR = baseR * coefficient
+        var inRand = 0
 
         var index = index
 
@@ -81,30 +81,37 @@ class AnimationViewLightning : View {
         if (index <= 0.25){
             changeR  = this.baseR + baseR
             changeR = (changeR * (1 - index / 0.25)).toFloat()
+            inRand = 1
         }else if (index <= 0.4){
             index = index - 0.25F
             changeR  = this.baseR
             changeR = -(changeR * (index / (0.4F - 0.25F)))
+            inRand = 1
         }else if (index <= 0.6F){
             index = index - 0.4F
             changeR = this.baseR
             changeR = -changeR *  (1 - index / 0.2F)
+            inRand = 2
         }else if (index <= 0.7F){
             index = index - 0.6F
             changeR = baseR
             changeR = changeR * index / 0.1F
+            inRand = 2
         }else if (index <= 0.8F){
             index = index - 0.7F
             changeR = baseR
             changeR = baseR - changeR * index / 0.1F
+            inRand = 0
         }else if (index <= 0.9F){
             index = index - 0.8F
             changeR = baseR
             changeR = -changeR * index / 0.1F
+            inRand = 0
         }else if (index <= 1F){
             index = index - 0.9F
             changeR = baseR
             changeR = -changeR + changeR * (index / 0.1F)
+            inRand = 0
         }
 
 
@@ -134,12 +141,12 @@ class AnimationViewLightning : View {
             points.set(i , Point(points[i].x + changeR , points[i].y))
         }
 
-        val lensPoints = getLensPoints(points)
+//        val lensPoints = getLensPoints(points, inRand)
 
-        path.moveTo(lensPoints[0].x , lensPoints[0].y)
+        path.moveTo(points[0].x , points[0].y)
 
-        for (index in 1..lensPoints.size - 1){
-            path.lineTo(lensPoints[index].x , lensPoints[index].y)
+        for (index in 1..points.size - 1){
+            path.lineTo(points[index].x , points[index].y)
         }
 
         canvas.drawPath(path , paint)
@@ -150,14 +157,6 @@ class AnimationViewLightning : View {
 //        paint2.color = Color.YELLOW
 //        canvas.drawLine(1000F , 0F ,-1000F , 0F , paint2)
 //        canvas.drawLine( 0F ,-1000F , 0F , 1000F , paint2)
-    }
-
-    private fun  getLensPoints(points: MutableList<Point>): MutableList<Point> {
-        val lensPoints : MutableList<Point> = ArrayList()
-        for ((index , point) in points.withIndex()){
-            lensPoints.add(point)
-        }
-        return lensPoints
     }
 
 
@@ -178,7 +177,7 @@ class AnimationViewLightning : View {
         canvas.drawArc(RectF(-baseR, -baseR, baseR, baseR), 0F , 360F,true , paint)
 
     }
-    
+
 
     //开始动画
     fun changeView() {
