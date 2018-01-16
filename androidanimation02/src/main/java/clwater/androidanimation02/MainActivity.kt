@@ -12,13 +12,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        animationviewater_main.onClick {
-//            animationviewater_main.changeView()
-//        }
-//
-//        animationvielighting_main.onClick {
-//            animationvielighting_main.changeView()
-//        }
+        animationviewater_main.onClick {
+            animationviewater_main.changeView()
+        }
+
+        animationvielighting_main.onClick {
+            animationvielighting_main.changeView()
+        }
 
         animationviefire_main.onClick {
             animationviefire_main.changeView()

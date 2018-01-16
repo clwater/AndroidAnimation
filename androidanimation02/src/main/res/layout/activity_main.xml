@@ -18,11 +18,11 @@
 
 
 
-            <!--<clwater.androidanimation02.AnimationViewWater-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:id="@+id/animationviewater_main"/>-->
+            <clwater.androidanimation02.AnimationViewWater
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/animationviewater_main"/>
 
             <clwater.androidanimation02.AnimationViewFire
                 android:layout_width="0dp"
@@ -30,11 +30,11 @@
                 android:layout_height="match_parent"
                 android:id="@+id/animationviefire_main"/>
 
-            <!--<clwater.androidanimation02.AnimationViewLightning-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:id="@+id/animationvielighting_main"/>-->
+            <clwater.androidanimation02.AnimationViewLightning
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/animationvielighting_main"/>
 
 
         </LinearLayout>
