@@ -72,59 +72,52 @@ class AnimationViewLightning : View {
 
     private fun  drawLighting(canvas: Canvas , index: Float) {
         val baseR = baseR * coefficient
-        var inRand = 0
 
         var index = index
 
         var changeR = 0F
 
+
+        //将整个闪电的运动拆成七个部分
         if (index <= 0.25){
             changeR  = this.baseR + baseR
             changeR = (changeR * (1 - index / 0.25)).toFloat()
-            inRand = 1
         }else if (index <= 0.4){
             index = index - 0.25F
             changeR  = this.baseR
             changeR = -(changeR * (index / (0.4F - 0.25F)))
-            inRand = 1
         }else if (index <= 0.6F){
             index = index - 0.4F
             changeR = this.baseR
             changeR = -changeR *  (1 - index / 0.2F)
-            inRand = 2
         }else if (index <= 0.7F){
             index = index - 0.6F
             changeR = baseR
             changeR = changeR * index / 0.1F
-            inRand = 2
         }else if (index <= 0.8F){
             index = index - 0.7F
             changeR = baseR
             changeR = baseR - changeR * index / 0.1F
-            inRand = 0
         }else if (index <= 0.9F){
             index = index - 0.8F
             changeR = baseR
             changeR = -changeR * index / 0.1F
-            inRand = 0
         }else if (index <= 1F){
             index = index - 0.9F
             changeR = baseR
             changeR = -changeR + changeR * (index / 0.1F)
-            inRand = 0
         }
 
 
-
+        //设置画笔
         val path = Path()
         val paint = Paint()
         paint.strokeWidth = 5F
         paint.style = Paint.Style.FILL
-//        paint.color = Color.RED
         paint.color = viewBackgroundColor
 
         val points :MutableList<Point> = ArrayList()
-
+        //设置绘制闪电的路径点
         points.add(pointFactory(60 , baseR))
         points.add(pointFactory(-45 , baseR / 2F))
         points.add(pointFactory(-45 - 90 , baseR / 5F))
@@ -133,15 +126,12 @@ class AnimationViewLightning : View {
         points.add(pointFactory(45 , baseR / 5F))
         points.add(pointFactory(60 , baseR))
 
+
+        //设置闪电的偏移量(模拟运动情况)
         for (i in 0..points.size - 1){
             points.set(i , Point(points[i].x + changeR , points[i].y))
         }
 
-        for (i in 0..points.size - 1){
-            points.set(i , Point(points[i].x + changeR , points[i].y))
-        }
-
-//        val lensPoints = getLensPoints(points, inRand)
 
         path.moveTo(points[0].x , points[0].y)
 
@@ -151,7 +141,7 @@ class AnimationViewLightning : View {
 
         canvas.drawPath(path , paint)
 
-
+        //闪电绘制辅助坐标系
 //        val paint2 = Paint()
 //        paint2.strokeWidth = 5F
 //        paint2.color = Color.YELLOW
@@ -165,6 +155,7 @@ class AnimationViewLightning : View {
         //设置画笔
         val paint = Paint()
 
+        //添加闪电移动到指定位置时的背景颜色设置
         if ((index <= 0.45F && index >= 0.35F) || (index >= 0.65F && index <= 0.75F)) {
             paint.color = Color.parseColor("#ACADAC")
         }else{

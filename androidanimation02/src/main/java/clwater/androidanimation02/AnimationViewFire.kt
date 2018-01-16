@@ -26,7 +26,6 @@ class AnimationViewFire : View {
     var perIndex : Float = 0F   //当前坐标
     val baseR = 100F            //展示view的半径
     val coefficient = 0.5F     //内部火焰占整体的比例
-    val C = 0.552284749831f     //利用贝塞尔绘制圆的常数
     var viewBackgroundColor = 0xFFF9FAF9.toInt()   //背景颜色
 
     data class Point(val x: Float , val y:Float)   //坐标点的数据类
@@ -94,24 +93,25 @@ class AnimationViewFire : View {
     private fun  drawFires(canvas: Canvas , index: Float) {
         //设置火焰半径
 
+        //设置原图层(火焰绘制)
+        val srcB = makeSrc(2 * baseR.toInt(), 2 * baseR.toInt(), index)
+        //设置遮罩层
+        val dstB = makeDst(2 * baseR.toInt(), 2 * baseR.toInt(), index)
 
 
-
-        val mSrcB = makeSrc(2 * baseR.toInt(), 2 * baseR.toInt(), index)
-        val mDstB = makeDst(2 * baseR.toInt(), 2 * baseR.toInt(), index)
-
-
-        val paint2 = Paint()
+        val paint = Paint()
 
         val x = 0
         val y = 0
 
         canvas.saveLayer(x - baseR, y - baseR, x + baseR , y + baseR, null, Canvas.ALL_SAVE_FLAG)
 
-        canvas.drawBitmap(mDstB,  -baseR/2,  -baseR/2, paint2)
-        paint2.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-        canvas.drawBitmap(mSrcB, -baseR/2, -baseR/2, paint2)
-        paint2.xfermode = null
+        //绘制遮罩层
+        canvas.drawBitmap(dstB,  -baseR/2,  -baseR/2, paint)
+        //设置遮罩模式为SRC_IN显示原图层与遮罩层相交部分
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        canvas.drawBitmap(srcB, -baseR/2, -baseR/2, paint)
+        paint.xfermode = null
 
     }
 
@@ -171,8 +171,6 @@ class AnimationViewFire : View {
         //设置画笔
         val paint = Paint()
         paint.style = Paint.Style.FILL
-//        paint.style = Paint.Style.STROKE
-//        paint.color = Color.BLUE
         paint.color = viewBackgroundColor
         paint.strokeWidth = 10F
         //存储关键点坐标
@@ -219,15 +217,6 @@ class AnimationViewFire : View {
         //绘制图形
         canvas.drawPath(path, paint)
 
-
-
-        paint.color = Color.BLUE
-        paint.textSize = 30F
-
-        for( (index,point) in points.withIndex()) {
-            paint.strokeWidth = 1F
-            canvas.drawPoint(point.x , point.y , paint)
-        }
         return bm
     }
 
