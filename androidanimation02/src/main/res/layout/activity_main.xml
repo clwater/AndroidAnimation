@@ -16,13 +16,11 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-
-
             <clwater.androidanimation02.AnimationViewWater
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:id="@+id/animationviewater_main"/>
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/animationviewater_main"/>
 
             <clwater.androidanimation02.AnimationViewFire
                 android:layout_width="0dp"

@@ -100,15 +100,11 @@ class AnimationViewFire : View {
 
 
         val paint = Paint()
-
-        val x = 0
-        val y = 0
-
-        canvas.saveLayer(x - baseR, y - baseR, x + baseR , y + baseR, null, Canvas.ALL_SAVE_FLAG)
+        canvas.saveLayer(-baseR, -baseR, baseR , baseR, null, Canvas.ALL_SAVE_FLAG)
 
         //绘制遮罩层
         canvas.drawBitmap(dstB,  -baseR/2,  -baseR/2, paint)
-        //设置遮罩模式为SRC_IN显示原图层与遮罩层相交部分
+        //设置遮罩模式为SRC_IN显示原图层中原图层与遮罩层相交部分
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
         canvas.drawBitmap(srcB, -baseR/2, -baseR/2, paint)
         paint.xfermode = null
@@ -154,6 +150,8 @@ class AnimationViewFire : View {
         val dstLength = baseR * coefficient * index * 2
 
         val rectf = RectF(-dstLength, -dstLength, dstLength, dstLength)
+
+        //没找到合适的扰动效果,只能简单实现一个遮罩效果
         canvas.drawArc(rectf , 0F , 360F , true, paint)
 
         return bm
@@ -176,7 +174,7 @@ class AnimationViewFire : View {
         //存储关键点坐标
         val points : MutableList<Point> = ArrayList()
 
-
+        //整体火焰是由六个贝塞尔曲线绘制成的
         points.add(pointFactory( 190F , baseR))
         points.add(pointFactory( 280F , baseR / 3F * 4))
         points.add(pointFactory( 320F ,  baseR / 6F))

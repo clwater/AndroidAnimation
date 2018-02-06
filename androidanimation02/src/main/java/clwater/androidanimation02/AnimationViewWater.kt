@@ -98,6 +98,7 @@ class AnimationViewWater : View {
         points.add(Point(baseR , baseR * C ))
         points.add(Point(baseR , 0F))
         //水滴底部变换系数
+        //这两个变换系数使得水滴在下落的过程中渐渐变扁
         val bottomCoefficient = 0.3F
         val tempBaseR = (baseR - baseR * bottomCoefficient * index)
         points.add(Point(baseR , -tempBaseR * C))
@@ -111,6 +112,7 @@ class AnimationViewWater : View {
 
 
         //设置四个部分(90°一个部分)的贝塞尔曲线
+        //关于贝塞尔曲线的事情...  感觉可以再做点记录
         val path = Path()
         path.moveTo(points[0].x , points[0].y)
         path.cubicTo(

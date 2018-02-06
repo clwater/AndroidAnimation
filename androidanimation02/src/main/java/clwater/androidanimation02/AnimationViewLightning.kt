@@ -128,6 +128,7 @@ class AnimationViewLightning : View {
 
 
         //设置闪电的偏移量(模拟运动情况)
+        //原本还想实现一个中心放大的透镜效果,但是效果很僵硬,只能移除了
         for (i in 0..points.size - 1){
             points.set(i , Point(points[i].x + changeR , points[i].y))
         }
