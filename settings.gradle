@@ -1,1 +1,1 @@
-include ':app', ':androidanimation01', ':androidanimation02'
+include ':app', ':androidanimation01', ':androidanimation02', ':androidanimation03'
