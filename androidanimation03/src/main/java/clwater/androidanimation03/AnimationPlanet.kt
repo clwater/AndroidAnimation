@@ -65,16 +65,16 @@ class AnimationPlanet : View {
 
     }
 
-    private fun drawGas(canvas: Canvas, perIndex: Float) {
+    private fun drawGas(canvas: Canvas, index: Float) {
         canvas.save()
         canvas.rotate(45F)
-//        val pointPaint = Paint()
-//        pointPaint.strokeWidth = 50F
-//        canvas.drawPoint(0F , 100F , pointPaint)
+
 
         val gasWidth = 18F
 
-        var baseR = baseR * 0.7F
+        val baseR = baseR * 0.7F
+
+        val absBaseR = baseR / 5F
 
         val paint = Paint()
         paint.strokeWidth = gasWidth
@@ -85,11 +85,83 @@ class AnimationPlanet : View {
         paintArc.color = 0xff2F3768.toInt()
 
 
+
+        val gasLength = baseR * 2F
+        canvas.save()
+
+
+        val gsaL = gasWidth / 2F * 3
+        var maxGasLength = (gasLength + gsaL ) / 2
+        var index = index
+
+        canvas.scale(1F , -1F)
+
+
+        canvas.save()
+        canvas.translate(baseR , baseR * 1.2F)
+        canvas.translate(0F , absBaseR)
+        drawLines(0F, maxGasLength, canvas, paint)
+        drawWhite( maxGasLength * index, gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index - 1 ), gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index + 1 ), gasWidth , gsaL * 2 , canvas)
+        canvas.restore()
+
+
+
+        index = index + 0.3F
+        canvas.save()
+        canvas.translate(-baseR , baseR * 1.2F)
+        canvas.translate(0F , absBaseR)
+        drawLines(0F, maxGasLength, canvas, paint)
+        drawWhite( maxGasLength * index, gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index - 1 ), gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index + 1 ), gasWidth , gsaL * 2 , canvas)
+        canvas.restore()
+
+
+        index = index + 0.3F
+        canvas.save()
+        canvas.translate(0F, baseR * 1.2F)
+        canvas.translate(0F , -absBaseR)
+        maxGasLength = 2 *   absBaseR + maxGasLength
+        drawLines(0F, maxGasLength, canvas, paint)
+        drawWhite( maxGasLength * index, gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index - 1 ), gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index + 1 ), gasWidth , gsaL * 2 , canvas)
+        canvas.restore()
+
+        index = index + 0.3F
+        canvas.save()
+        canvas.translate(baseR / 2F, baseR * 1.2F)
+        canvas.translate(0F , -absBaseR)
+        drawLines(0F, maxGasLength, canvas, paint)
+        drawWhite( maxGasLength * index, gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index - 1 ), gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index + 1 ), gasWidth , gsaL * 2 , canvas)
+        canvas.restore()
+
+        index = index + 0.3F
+        canvas.save()
+        canvas.translate(- baseR / 2F, baseR * 1.2F)
+        canvas.translate(0F , -absBaseR)
+        drawLines(0F, maxGasLength, canvas, paint)
+        drawWhite( maxGasLength * index, gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index - 1 ), gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index + 1 ), gasWidth , gsaL * 2 , canvas)
+        canvas.restore()
+
+
+
+
+        canvas.restore()
+
+
+
         val rectArc = RectF(-gasWidth / 2F , -gasWidth / 2F , gasWidth/ 2F ,gasWidth/ 2F)
         canvas.save()
-        canvas.translate(-baseR , 0F)
+        canvas.translate(baseR , -baseR)
         canvas.drawArc(rectArc , 0F , 360F , false , paintArc)
-        canvas.translate(2 * baseR , 0F)
+        canvas.translate(2 * -baseR , 0F)
         canvas.drawArc(rectArc , 0F , 360F , false , paintArc)
         canvas.restore()
 
@@ -97,8 +169,87 @@ class AnimationPlanet : View {
         val rectf = RectF(-baseR , -baseR , baseR ,baseR)
         canvas.drawArc(rectf , 0F , 180F , false , paint)
 
+        canvas.drawLine(baseR ,0F ,  baseR ,  -baseR, paint)
+        canvas.drawLine(-baseR ,0F ,  -baseR ,  -baseR, paint)
+
+        val pointPaint = Paint()
+        pointPaint.strokeWidth = 20F
+        pointPaint.color = Color.RED
+//        canvas.rotate(180F)
+
+
+
+
+
+
 
         canvas.restore()
+    }
+
+    private fun drawWhite(offset: Float, gasWidth: Float, gsaL : Float , canvas: Canvas) {
+        val r = gasWidth / 2F
+
+        canvas.save()
+        canvas.translate( 0F , offset - 2 * gsaL )
+
+
+
+        val pointPaint = Paint()
+        pointPaint.strokeWidth = 20F
+        pointPaint.color = Color.RED
+
+        val path = Path()
+        path.moveTo(-r , gsaL)
+        path.cubicTo(
+                - r * C ,  gsaL - r,
+                r * C ,  gsaL - r,
+                r , gsaL
+        )
+
+        path.lineTo(r , - gsaL)
+        path.cubicTo(
+                r * C ,  - gsaL + r,
+                -r * C ,  - gsaL + r,
+                -r , - gsaL
+        )
+
+        path.lineTo(-r , gsaL * 1.5F)
+
+        val paint = Paint()
+//        paint.color = Color.WHITE
+        paint.color = viewBackgroundColor
+        canvas.drawPath(path , paint)
+
+//        canvas.drawPoint(100F , 0F , pointPaint)
+
+        canvas.restore()
+    }
+
+    private fun drawLines(index0: Float, index1: Float, canvas: Canvas, paint: Paint) {
+        canvas.save()
+        val paintArc = Paint()
+        paintArc.color = 0xff2F3768.toInt()
+
+        val gasWidth = 18F
+
+        val paint = Paint()
+        paint.strokeWidth = gasWidth
+        paint.style = Paint.Style.STROKE
+        paint.color = 0xff2F3768.toInt()
+
+
+
+        val rectArc = RectF(-gasWidth / 2F , -gasWidth / 2F , gasWidth/ 2F ,gasWidth/ 2F)
+        canvas.translate(0F , index0)
+        canvas.drawArc(rectArc , 0F , 360F  , true, paintArc)
+        canvas.restore()
+        canvas.save()
+        canvas.translate(0F , index1)
+        canvas.drawArc(rectArc , 0F , 360F  , true, paintArc)
+        canvas.restore()
+
+        canvas.drawLine(0F , index0 , 0F , index1 , paint)
+
     }
 
     private fun drawPlanet(canvas: Canvas , index : Float) {
@@ -234,7 +385,7 @@ class AnimationPlanet : View {
 
         canvas.translate(-coverWidth / 2F , coverWidth * 1.5F)
 
-        val index = index * 10 % 10 / 10F
+        val index = index
         canvas.translate(0F , coverWidth * index )
 
 
@@ -270,11 +421,12 @@ class AnimationPlanet : View {
 
     //开始动画
     fun changeView() {
-        val va = ValueAnimator.ofFloat(0F, 10F)
-        va.duration = 15000
+        val va = ValueAnimator.ofFloat(0F, 50F)
+        va.duration = 50000
 //        va.interpolator = OvershootInterpolator()
         va.addUpdateListener { animation ->
             perIndex = animation.animatedValue as Float
+            perIndex = perIndex * 10 % 10 / 10F
             invalidate()
         }
         va.start()
