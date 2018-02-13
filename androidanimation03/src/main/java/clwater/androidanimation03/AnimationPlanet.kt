@@ -22,6 +22,7 @@ class AnimationPlanet : View {
     var viewWidth : Float = 0F  //背景宽度
     var viewHeight : Float = 0F //背景高度
     var perIndex : Float = 0F   //当前坐标
+    var perIndexInAll : Float = 0F   //当前坐标
     var baseR = 200F
     var viewBackgroundColor = 0xFFF9FAF9.toInt()   //背景颜色
     val C = 0.552284749831f
@@ -50,19 +51,81 @@ class AnimationPlanet : View {
 
 
 
-        val paint2 = Paint()
-        paint2.textSize = 50F
-        paint2.strokeWidth = 2F
-        paint2.color = Color.BLUE
+//        val paint2 = Paint()
+//        paint2.textSize = 50F
+//        paint2.strokeWidth = 2F
+//        paint2.color = Color.BLUE
 
+//        canvas.drawLine(-width.toFloat() , 0F , width.toFloat() , 0F , paint2)
+//        canvas.drawLine(0F , -height.toFloat() , 0F , height.toFloat() , paint2)
 
-        canvas.drawLine(-width.toFloat() , 0F , width.toFloat() , 0F , paint2)
-        canvas.drawLine(0F , -height.toFloat() , 0F , height.toFloat() , paint2)
+        drawStarts(canvas , perIndexInAll)
 
         drawGas(canvas , perIndex)
-
         drawPlanet(canvas, perIndex)
 
+
+    }
+
+    private fun drawStarts(canvas: Canvas, perIndexInAll: Float) {
+        val maxRand = 800
+
+        canvas.translate(-maxRand / 2F , -maxRand / 2F)
+        val Random = Random(perIndexInAll.toInt().toLong())
+
+        drawStart(canvas ,  Random.nextFloat() * maxRand , Random.nextFloat() * maxRand , perIndex)
+        drawStart(canvas ,  Random.nextFloat() * maxRand , Random.nextFloat() * maxRand , perIndex)
+        drawStart(canvas ,  Random.nextFloat() * maxRand , Random.nextFloat() * maxRand , perIndex)
+        drawStart(canvas ,  Random.nextFloat() * maxRand , Random.nextFloat() * maxRand , perIndex)
+        drawStart(canvas ,  Random.nextFloat() * maxRand , Random.nextFloat() * maxRand , perIndex)
+
+        canvas.translate(maxRand / 2F , maxRand / 2F)
+
+    }
+
+    private fun drawStart(canvas: Canvas, x: Float, y: Float, per: Float) {
+        var per = per
+        if (per >= 1.0F){
+            per -= 1F
+        }
+        if (per <= 0.5F){
+            per *= 2
+        }else{
+            per = (1 - per) * 2
+        }
+
+        canvas.save()
+        canvas.translate(x , y)
+
+        canvas.scale(per , per)
+
+        val paint = Paint()
+        paint.color = 0xff78D8DF.toInt()
+
+        val startLength = 30F
+        val startOffset = startLength / 3F
+
+        val path = Path()
+        path.moveTo(0F , startLength)
+        path.lineTo(startOffset , startOffset )
+        path.lineTo(startLength , 0F)
+        path.lineTo(startOffset  , -startOffset )
+        path.lineTo(0F , -startLength)
+        path.lineTo(-startOffset  , -startOffset )
+        path.lineTo(-startLength , 0F)
+        path.lineTo(-startOffset  , startOffset )
+        path.lineTo(0F , startLength)
+
+
+        canvas.drawPath(path , paint)
+
+        paint.color = viewBackgroundColor
+        canvas.scale(0.3F , 0.3F)
+        canvas.drawPath(path , paint)
+
+
+
+        canvas.restore()
     }
 
     private fun drawGas(canvas: Canvas, index: Float) {
@@ -96,16 +159,14 @@ class AnimationPlanet : View {
 
         canvas.scale(1F , -1F)
 
-
         canvas.save()
         canvas.translate(baseR , baseR * 1.2F)
         canvas.translate(0F , absBaseR)
         drawLines(0F, maxGasLength, canvas, paint)
         drawWhite( maxGasLength * index, gasWidth , gsaL * 2 , canvas)
-        drawWhite( maxGasLength * (index - 1 ), gasWidth , gsaL * 2 , canvas)
-        drawWhite( maxGasLength * (index + 1 ), gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index - 1 ) * 1.1F, gasWidth , gsaL * 2 , canvas)
+        drawWhite( maxGasLength * (index + 1 ) * 1.1F, gasWidth , gsaL * 2 , canvas)
         canvas.restore()
-
 
 
         index = index + 0.3F
@@ -426,6 +487,7 @@ class AnimationPlanet : View {
 //        va.interpolator = OvershootInterpolator()
         va.addUpdateListener { animation ->
             perIndex = animation.animatedValue as Float
+            perIndexInAll = perIndex
             perIndex = perIndex * 10 % 10 / 10F
             invalidate()
         }
