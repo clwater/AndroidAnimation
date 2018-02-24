@@ -385,3 +385,5 @@ fun makeDst(w: Int, h: Int, index :Float): Bitmap {
 ```
 
 火焰来说,虽然需要的效果代码都实现了,但是缺少设计,整体的效果到时不尽如人意.针对效果来说还有很多的优化空间
+
+相关代码可以访问[我的GitHub](https://github.com/clwater/AndroidAnimation/tree/master/androidanimation02)来获取,欢迎大家start或者提供建议.
