@@ -63,11 +63,9 @@ class AnimationPlanet : View {
         val Random = Random(perIndexInAll.toInt().toLong())
 
         //绘制背景的星星
-        drawStart(canvas ,  Random.nextFloat() * maxRand , Random.nextFloat() * maxRand , perIndex)
-        drawStart(canvas ,  Random.nextFloat() * maxRand , Random.nextFloat() * maxRand , perIndex)
-        drawStart(canvas ,  Random.nextFloat() * maxRand , Random.nextFloat() * maxRand , perIndex)
-        drawStart(canvas ,  Random.nextFloat() * maxRand , Random.nextFloat() * maxRand , perIndex)
-        drawStart(canvas ,  Random.nextFloat() * maxRand , Random.nextFloat() * maxRand , perIndex)
+        for (index in 0..4){
+            drawStart(canvas ,  Random.nextFloat() * maxRand , Random.nextFloat() * maxRand , perIndex)
+        }
 
         canvas.translate(maxRand / 2F , maxRand / 2F)
     }
@@ -75,6 +73,7 @@ class AnimationPlanet : View {
     //绘制背景的星星内容
     private fun drawStart(canvas: Canvas, x: Float, y: Float, per: Float) {
         var per = per
+        //这个部分是为了让星星实现从小到大后再从大到小的变动
         if (per >= 1.0F){
             per -= 1F
         }
@@ -95,6 +94,7 @@ class AnimationPlanet : View {
         val startLength = 30F
         val startOffset = startLength / 3F
 
+        //通过路径描绘星星的形状
         val path = Path()
         path.moveTo(0F , startLength)
         path.lineTo(startOffset , startOffset )
@@ -109,6 +109,7 @@ class AnimationPlanet : View {
         canvas.drawPath(path , paint)
 
         paint.color = viewBackgroundColor
+        //通过缩小绘制星星内部形状
         canvas.scale(0.3F , 0.3F)
         canvas.drawPath(path , paint)
 
@@ -208,10 +209,6 @@ class AnimationPlanet : View {
         canvas.drawLine(baseR ,0F ,  baseR ,  -baseR, paint)
         canvas.drawLine(-baseR ,0F ,  -baseR ,  -baseR, paint)
 
-        val pointPaint = Paint()
-        pointPaint.strokeWidth = 20F
-        pointPaint.color = Color.RED
-
         canvas.restore()
     }
 
@@ -226,6 +223,7 @@ class AnimationPlanet : View {
         pointPaint.strokeWidth = 20F
         pointPaint.color = Color.RED
 
+        //通过贝塞尔曲线绘制半圆效果
         val path = Path()
         path.moveTo(-r , gsaL)
         path.cubicTo(
@@ -276,13 +274,10 @@ class AnimationPlanet : View {
     }
 
     private fun drawPlanet(canvas: Canvas , index : Float) {
-
-
         //设置原图层
         val srcB = makeSrc(index)
         //设置遮罩层
         val dstB = makeDst(index)
-
 
         val paint = Paint()
         canvas.saveLayer(-baseR, -baseR, baseR , baseR, null, Canvas.ALL_SAVE_FLAG)
