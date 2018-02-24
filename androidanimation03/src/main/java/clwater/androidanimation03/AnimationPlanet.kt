@@ -215,6 +215,7 @@ class AnimationPlanet : View {
         canvas.restore()
     }
 
+    //绘制尾部空白部分
     private fun drawWhite(offset: Float, gasWidth: Float, gsaL : Float , canvas: Canvas) {
         val r = gasWidth / 2F
 
