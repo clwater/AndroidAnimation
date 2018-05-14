@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/androidanimation01/androidanimation01.iml" filepath="$PROJECT_DIR$/androidanimation01/androidanimation01.iml" />
       <module fileurl="file://$PROJECT_DIR$/androidanimation02/androidanimation02.iml" filepath="$PROJECT_DIR$/androidanimation02/androidanimation02.iml" />
       <module fileurl="file://$PROJECT_DIR$/androidanimation03/androidanimation03.iml" filepath="$PROJECT_DIR$/androidanimation03/androidanimation03.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidanimation04_weather/androidanimation04_weather.iml" filepath="$PROJECT_DIR$/androidanimation04_weather/androidanimation04_weather.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
