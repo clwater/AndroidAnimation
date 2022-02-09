@@ -6,6 +6,8 @@ android {
 
 
 
+
+
     defaultConfig {
         applicationId "clwater.androidanimation04_weather"
         minSdkVersion 23
