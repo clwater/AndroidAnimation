@@ -153,6 +153,9 @@ public class CustomSunView extends View {
                 valueAnimator.start();
             }
         });
+        //这里针对不同的检测值使用了不同的差值器, 理论上一次动画循环的时间为每个差值器
+        //循环时间的最小公约数. 但是我们又在差值器一次周期完成后又设置了新的时间.
+        //理论上这个重复的周期会变得不易被观测
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
