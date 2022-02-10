@@ -142,7 +142,7 @@ public class CustomSunView extends View {
     public void animators(int index){
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, getRandomWithBool(), 0f , getRandomWithBool() , 0f);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        valueAnimator.setDuration((long) (10000 * getRandom()));
+        valueAnimator.setDuration((long) (8 * 1000 * getRandom()));
         valueAnimator.setRepeatCount(1);
         valueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
